@@ -2,8 +2,9 @@ package top.lixxing.web.server.handler;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.config.Config;
-import top.lixxing.web.server.logger.LoggerFactory;
 import top.lixxing.web.server.response.HttpResponse;
 import top.lixxing.web.server.utils.HttpRequester;
 
@@ -11,8 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ProxyHandler implements BaseWebHandler {
 
@@ -33,7 +32,7 @@ public class ProxyHandler implements BaseWebHandler {
         try {
             return doProxy(targetUrl, exchange.getRequestMethod());
         } catch (Exception e) {
-            logger.log(Level.SEVERE, e.getMessage(), e);
+            logger.error(e.getMessage(), e);
             return HttpResponse.BAD_GATEWAY;
         }
     }

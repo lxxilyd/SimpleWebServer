@@ -1,6 +1,12 @@
 package top.lixxing.web.server;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Startup {
+
+	private static final Logger logger = LoggerFactory.getLogger(Startup.class);
 
 	public static void main(String[] args) {
 
@@ -9,7 +15,7 @@ public class Startup {
 		try {
 			simpleWebServer.run();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }

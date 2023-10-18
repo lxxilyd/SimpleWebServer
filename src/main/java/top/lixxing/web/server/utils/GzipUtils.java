@@ -1,10 +1,11 @@
 package top.lixxing.web.server.utils;
 
 
-import top.lixxing.web.server.logger.LoggerFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
 public class GzipUtils {
@@ -17,7 +18,7 @@ public class GzipUtils {
 			gzipOutputStream.write(data);
 			gzipOutputStream.finish();
 		} catch (Exception e) {
-			logger.severe(e.getMessage() + e);
+			logger.error(e.getMessage() + e);
 		}
 		return outputStream.toByteArray();
 	}

@@ -1,9 +1,10 @@
 package top.lixxing.web.server;
 
 import com.sun.net.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.handler.BaseWebHandler;
 import top.lixxing.web.server.config.Config;
-import top.lixxing.web.server.logger.LoggerFactory;
 import top.lixxing.web.server.utils.ClassScanUtils;
 import top.lixxing.web.server.utils.filter.AssignableScanFilter;
 
@@ -16,7 +17,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class SimpleWebServer {
 

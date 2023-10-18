@@ -1,6 +1,7 @@
 package top.lixxing.web.server.utils;
 
-import top.lixxing.web.server.logger.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.utils.filter.ClassScanFilter;
 
 import java.io.File;
@@ -13,7 +14,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 
 public class ClassScanUtils {
 
@@ -27,7 +27,7 @@ public class ClassScanUtils {
 		List<Class<?>> classes = new ArrayList<>();
 
 		Enumeration<URL> resources = Thread.currentThread().getContextClassLoader().getResources(packageName);
-		logger.fine("start scan Class...");
+		logger.debug("start scan Class...");
 		while (resources.hasMoreElements()) {
 			URL url = resources.nextElement();
 			if (url.getProtocol().equals("file")) {
@@ -52,7 +52,7 @@ public class ClassScanUtils {
 				List<Class<?>> classList = scanFileClass(file.getPath(), basePath);
 				classes.addAll(classList);
 			}
-			logger.fine("scan file :" + file.getAbsolutePath());
+			logger.debug("scan file :" + file.getAbsolutePath());
 			Class<?> aClass = nameToClass(file.getAbsolutePath().replace(basePath, ""));
 			if (aClass != null) {
 				classes.add(aClass);
@@ -64,7 +64,7 @@ public class ClassScanUtils {
 	private static List<Class<?>> scanJarClass(URL url) throws IOException {
 		List<Class<?>> classes = new ArrayList<>();
 
-		logger.fine("scanJarFile url: " + url);
+		logger.debug("scanJarFile url: " + url);
 		JarFile jarFile = null;
 		URLConnection connection = url.openConnection();
 		if (connection instanceof JarURLConnection) {
@@ -99,7 +99,7 @@ public class ClassScanUtils {
 			try {
 				return ClassLoader.getSystemClassLoader().loadClass(className);
 			} catch (Exception e) {
-				logger.severe(e.getMessage() + ": " + e.getLocalizedMessage());
+				logger.error(e.getMessage(), e);
 			}
 		}
 		return null;

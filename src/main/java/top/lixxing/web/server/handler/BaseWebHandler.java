@@ -3,8 +3,9 @@ package top.lixxing.web.server.handler;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.config.Config;
-import top.lixxing.web.server.logger.LoggerFactory;
 import top.lixxing.web.server.response.HttpResponse;
 import top.lixxing.web.server.utils.GzipUtils;
 
@@ -12,8 +13,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public interface BaseWebHandler extends HttpHandler {
@@ -64,9 +63,9 @@ public interface BaseWebHandler extends HttpHandler {
 			exchange.sendResponseHeaders(status, data.length);
 			outputStream.write(data);
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			exchange.close();
 		}

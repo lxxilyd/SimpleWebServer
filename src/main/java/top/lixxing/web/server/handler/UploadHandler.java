@@ -2,8 +2,9 @@ package top.lixxing.web.server.handler;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.config.Config;
-import top.lixxing.web.server.logger.LoggerFactory;
 import top.lixxing.web.server.response.HttpResponse;
 
 import java.io.ByteArrayOutputStream;
@@ -14,7 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class UploadHandler implements BaseWebHandler {
 
@@ -37,7 +37,7 @@ public class UploadHandler implements BaseWebHandler {
         }
         if (!"POST".equals(method)) {
             String msg = "Method (" + method + ") is Not Support";
-            logger.warning(msg);
+            logger.warn(msg);
             return HttpResponse.methodNotAllowed(msg);
         }
         Map<String, byte[]> dataMap = parseData(exchange);

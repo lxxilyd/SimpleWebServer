@@ -1,12 +1,13 @@
 package top.lixxing.web.server.config;
 
-import top.lixxing.web.server.logger.LoggerFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class Config {
 
@@ -48,7 +49,7 @@ public class Config {
         try {
             properties.load(new FileReader(CONFIG_NAME));
         } catch (Exception e) {
-            logger.warning("配置文件不存在,请检查类路径下的" + CONFIG_NAME + "文件");
+            logger.warn("配置文件不存在,请检查类路径下的" + CONFIG_NAME + "文件");
         }
     }
 
