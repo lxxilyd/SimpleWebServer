@@ -1,0 +1,60 @@
+package top.lixxing.web.server;
+
+import com.sun.net.httpserver.HttpServer;
+import top.lixxing.web.server.handler.BaseWebHandler;
+import top.lixxing.web.server.config.Config;
+import top.lixxing.web.server.logger.LoggerFactory;
+import top.lixxing.web.server.utils.ClassScanUtils;
+import top.lixxing.web.server.utils.filter.AssignableScanFilter;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+public class SimpleWebServer {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public void run() throws IOException, InstantiationException, IllegalAccessException {
+        Config config = Config.getInstance();
+        Properties properties = config.getProperties();
+        String port = properties.getProperty(Config.SERVER_PORT, "10025");
+        String workThread = properties.getProperty(Config.SERVER_WORK_THREAD, "3");
+		int threadCount = Integer.parseInt(workThread);
+		Executor executor = new ThreadPoolExecutor(threadCount, threadCount, 60, TimeUnit.SECONDS, new ArrayBlockingQueue<>(threadCount));
+        HttpServer server = HttpServer.create();
+
+        server.bind(new InetSocketAddress(Integer.parseInt(port)), 100);
+        server.setExecutor(executor);
+
+        List<BaseWebHandler> handlers = loadHandler();
+
+        for (BaseWebHandler handler : handlers) {
+            server.createContext(handler.url(), handler);
+        }
+
+        server.start();
+        logger.info("SimpleHttpServer start in port " + port + " ...");
+    }
+
+    private List<BaseWebHandler> loadHandler() throws IOException, IllegalAccessException, InstantiationException {
+        List<Class<?>> classes =  ClassScanUtils.scanAllWithFilter("top", new AssignableScanFilter(BaseWebHandler.class));
+
+        List<BaseWebHandler> handlers = new ArrayList<>();
+        for (Class<?> aClass : classes) {
+            if (aClass.isInterface()) {
+                continue;
+            }
+            BaseWebHandler baseWebHandler = (BaseWebHandler) aClass.newInstance();
+            handlers.add(baseWebHandler);
+        }
+        return handlers;
+    }
+}
