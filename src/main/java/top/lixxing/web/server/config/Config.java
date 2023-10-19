@@ -6,14 +6,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.LogManager;
 
 public class Config {
 
     private final Logger logger = LoggerFactory.getLogger(Config.class);
     private final Properties properties = new Properties();
     private final MimetypesFileTypeMap typeMap = new MimetypesFileTypeMap();
+    private static final LogManager logManager = LogManager.getLogManager();
+    private static final String logConfig= "conf/logging.properties";
 
     private static Config config;
     public static final String CONFIG_NAME = "conf/http.properties";
@@ -31,6 +36,14 @@ public class Config {
 
     private Config() {
         loadProperties();
+    }
+
+    static {
+        try {
+            InputStream inputStream = new FileInputStream(logConfig);
+            logManager.readConfiguration(inputStream);
+        } catch (Exception e) {
+        }
     }
 
     public static Config getInstance() {
