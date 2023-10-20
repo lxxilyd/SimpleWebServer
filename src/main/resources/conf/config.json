@@ -1,6 +1,25 @@
 {
   "server":{
     "port":"10025",
-    ""
+    "workThreads": 3,
+    "gzip": false,
+    "upload": {
+      "url": "/upload",
+      "path": "upload"
+    },
+    "web": [
+      {
+        "url": "/",
+        "path": "web",
+        "index": "index.html"
+      }
+    ],
+    "proxy": [
+      {
+        "url": "/proxy",
+        "target": "http://targetIp:targetPort",
+        "removeProxyUrl": true
+      }
+    ]
   }
 }
