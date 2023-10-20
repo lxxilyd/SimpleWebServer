@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.handler.BaseWebHandler;
 import top.lixxing.web.server.config.Config;
+import top.lixxing.web.server.handler.DispatcherHandler;
 import top.lixxing.web.server.utils.ClassScanUtils;
 import top.lixxing.web.server.utils.filter.AssignableScanFilter;
 
@@ -34,11 +35,12 @@ public class SimpleWebServer {
         server.bind(new InetSocketAddress(Integer.parseInt(port)), 100);
         server.setExecutor(executor);
 
-        List<BaseWebHandler> handlers = loadHandler();
-
-        for (BaseWebHandler handler : handlers) {
-            server.createContext(handler.url(), handler);
-        }
+//        List<BaseWebHandler> handlers = loadHandler();
+//
+//        for (BaseWebHandler handler : handlers) {
+//            server.createContext(handler.url(), handler);
+//        }
+        server.createContext("/", new DispatcherHandler());
 
         server.start();
         logger.info("SimpleHttpServer start in port " + port + " ...");
