@@ -29,12 +29,7 @@ public class ProxyHandler implements BaseWebHandler {
     public HttpResponse doRequest(HttpExchange exchange) throws IOException {
         String path = exchange.getRequestURI().getPath();
         String targetUrl = proxyTarget + (removeUrl ? path.replace(proxyUrl, "") : path);
-        try {
-            return doProxy(targetUrl, exchange.getRequestMethod());
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return HttpResponse.BAD_GATEWAY;
-        }
+        return doProxy(targetUrl, exchange.getRequestMethod());
     }
 
     private HttpResponse doProxy(String targetUrl, String method) {
@@ -50,14 +45,20 @@ public class ProxyHandler implements BaseWebHandler {
                 requester.header(k, value);
             }
         });
-        HttpRequester.Response response = requester.requestInputStream(requestBody).response();
-        byte[] data = response.getData();
-        Map<String, List<String>> headers = response.getHeaders();
-        headers.forEach((k, v) -> {
-            if (k != null && !"null".equals(k)) {
-                responseHeaders.putIfAbsent(k, v);
-            }
-        });
-        return new HttpResponse(response.getCode(), data, headers.get("Content-Type").get(0));
+
+        try {
+            HttpRequester.Response response = requester.requestInputStream(requestBody).response();
+            byte[] data = response.getData();
+            Map<String, List<String>> headers = response.getHeaders();
+            headers.forEach((k, v) -> {
+                if (k != null && !"null".equals(k)) {
+                    responseHeaders.putIfAbsent(k, v);
+                }
+            });
+            return new HttpResponse(response.getCode(), data, headers.get("Content-Type").get(0));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return HttpResponse.BAD_GATEWAY;
+        }
     }
 }
