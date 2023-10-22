@@ -48,6 +48,7 @@ public class IndexHandler implements WebHandler {
 		int available = inputStream.available();
 		byte[] data = new byte[available];
 		inputStream.read(data);
+		inputStream.close();
 		return HttpResponse.ok(data, contentType);
 	}
 }

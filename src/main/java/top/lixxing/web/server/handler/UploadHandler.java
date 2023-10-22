@@ -103,6 +103,7 @@ public class UploadHandler implements WebHandler {
     }
 
     private void saveFile(byte[] data, String name) throws IOException {
+        OutputStream outputStream = null;
         try {
             File file = new File(savePath);
             if (!file.exists()) {
@@ -110,12 +111,15 @@ public class UploadHandler implements WebHandler {
             }
             String filename = savePath + "/" + name;
             File saveFile = new File(filename);
-            OutputStream outputStream = new FileOutputStream(saveFile);
+            outputStream = new FileOutputStream(saveFile);
             outputStream.write(data);
             outputStream.flush();
-            outputStream.close();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
         }
     }
 }
