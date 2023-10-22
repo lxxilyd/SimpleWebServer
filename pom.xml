@@ -6,7 +6,7 @@
 
     <groupId>top.lixxing</groupId>
     <artifactId>sweb-server</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -69,6 +69,14 @@
             <resource>
                 <directory>src/main/resources/conf</directory>
                 <targetPath>${project.build.directory}/conf</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/bin</directory>
+                <targetPath>${project.build.directory}/bin</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources/logs</directory>
+                <targetPath>${project.build.directory}/logs</targetPath>
             </resource>
             <resource>
                 <directory>src/main/resources/META-INF</directory>
