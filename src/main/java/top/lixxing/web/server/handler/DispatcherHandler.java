@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.lixxing.web.server.SimpleWebServer;
 import top.lixxing.web.server.config.Config;
 import top.lixxing.web.server.response.HttpResponse;
 import top.lixxing.web.server.utils.AntPathMatcher;
@@ -33,7 +34,7 @@ public final class DispatcherHandler implements HttpHandler {
 
 	static {
 		try {
-			List<Class<?>> classes = ClassScanUtils.scanAllWithFilter("", new AssignableScanFilter(WebHandler.class));
+			List<Class<?>> classes = ClassScanUtils.scanAllWithFilter(SimpleWebServer.class.getPackage().getName(), new AssignableScanFilter(WebHandler.class));
 
 			for (Class<?> aClass : classes) {
 				if (aClass.isInterface()) {
