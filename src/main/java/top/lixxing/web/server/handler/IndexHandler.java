@@ -14,6 +14,7 @@ public class IndexHandler implements WebHandler {
 
 	private final String webPath = properties.getProperty(Config.WEB_PATH, "web");
 	private final String webIndex = properties.getProperty(Config.WEB_INDEX, "index.html");
+	private final String webTryFile= properties.getProperty(Config.WEB_TRY_FILE);
 
 	@Override
 	public String url() {
@@ -31,9 +32,16 @@ public class IndexHandler implements WebHandler {
 	}
 
 	private HttpResponse readFile(String filename) throws IOException {
+		filename.replace("\\", "/");
 		File file = new File(filename);
 		if (!file.exists()) {
-			return HttpResponse.NOT_FOUND;
+			if (webTryFile == null || webTryFile.length() == 0) {
+				return HttpResponse.NOT_FOUND;
+			}
+			file = new File(filename.substring(0, filename.lastIndexOf("/") + 1) + webTryFile);
+			if (!file.exists()) {
+				return HttpResponse.NOT_FOUND;
+			}
 		}
 		String contentType = config.getContentType(file);
 		InputStream inputStream = new FileInputStream(file);

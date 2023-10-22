@@ -8,6 +8,8 @@ public class Web {
 
 	private String index;
 
+	private String tryFile;
+
 	public String getUrl() {
 		return url;
 	}
@@ -30,5 +32,13 @@ public class Web {
 
 	public void setIndex(String index) {
 		this.index = index;
+	}
+
+	public String getTryFile() {
+		return tryFile;
+	}
+
+	public void setTryFile(String tryFile) {
+		this.tryFile = tryFile;
 	}
 }

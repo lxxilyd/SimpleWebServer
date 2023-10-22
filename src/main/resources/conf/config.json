@@ -6,11 +6,17 @@
     "url": "/upload",
     "path": "upload"
   },
+  "auth": {
+    "authPath": "",
+    "authHeader": "x-auth",
+    "authToken": "token"
+  },
   "web": [
     {
       "url": "/",
       "path": "web",
-      "index": "index.html"
+      "index": "index.html",
+      "tryFile": ""
     }
   ],
   "proxy": [

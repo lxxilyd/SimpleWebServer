@@ -12,6 +12,8 @@ public class Server {
 
 	private Upload upload;
 
+	private Auth auth;
+
 	private List<Web> web;
 
 	private List<Proxy> proxy;
@@ -46,6 +48,14 @@ public class Server {
 
 	public void setUpload(Upload upload) {
 		this.upload = upload;
+	}
+
+	public Auth getAuth() {
+		return auth;
+	}
+
+	public void setAuth(Auth auth) {
+		this.auth = auth;
 	}
 
 	public List<Web> getWeb() {

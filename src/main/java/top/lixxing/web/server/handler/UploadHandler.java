@@ -103,15 +103,19 @@ public class UploadHandler implements WebHandler {
     }
 
     private void saveFile(byte[] data, String name) throws IOException {
-        File file = new File(savePath);
-        if (!file.exists()) {
-            file.mkdirs();
+        try {
+            File file = new File(savePath);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+            String filename = savePath + "/" + name;
+            File saveFile = new File(filename);
+            OutputStream outputStream = new FileOutputStream(saveFile);
+            outputStream.write(data);
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
-        String filename = savePath + "/" + name;
-        File saveFile = new File(filename);
-        OutputStream outputStream = new FileOutputStream(saveFile);
-        outputStream.write(data);
-        outputStream.flush();
-        outputStream.close();
     }
 }

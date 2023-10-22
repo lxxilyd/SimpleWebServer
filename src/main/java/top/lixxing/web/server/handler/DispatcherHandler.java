@@ -52,6 +52,7 @@ public final class DispatcherHandler implements HttpHandler {
 	@Override
 	public void handle(HttpExchange httpExchange) throws IOException {
 		HttpExchangeHolder.put(httpExchange);
+		doAuth(httpExchange);
 		String requestUrl = httpExchange.getRequestURI().getPath();
 		WebHandler webHandler = HANDLER_CACHE.get(requestUrl);
 		if (webHandler == null) {
@@ -61,15 +62,30 @@ public final class DispatcherHandler implements HttpHandler {
 		doResponse(webHandler.doRequest(httpExchange));
 	}
 
-	public  void doResponse(HttpResponse response) {
+	private void doAuth(HttpExchange exchange) {
+		String authPath = properties.getProperty(Config.AUTH_PATH);
+		String requestPath = exchange.getRequestURI().getPath();
+		if (authPath == null || !pathMatcher.match(authPath, requestPath)) {
+			return;
+		}
+		Headers requestHeaders = exchange.getRequestHeaders();
+		String authHeader = properties.getProperty(Config.AUTH_HEADER, "x-token");
+		String authToken = properties.getProperty(Config.AUTH_TOKEN, "123456");
+		String requestToken = requestHeaders.getFirst(authHeader);
+		if (requestToken == null || requestToken.length() == 0 || !authToken.equals(requestToken)) {
+			doResponse(HttpResponse.UN_AUTHED);
+		}
+	}
+
+	private void doResponse(HttpResponse response) {
 		doResponse(response.getStatus(), response.getData(), response.getContentType());
 	}
 
-	public  void doResponse(int status, String message, String contentType) {
+	private void doResponse(int status, String message, String contentType) {
 		doResponse(status, message.getBytes(), contentType);
 	}
 
-	public  void doResponse(int status, byte[] data, String contentType) {
+	private void doResponse(int status, byte[] data, String contentType) {
 		HttpExchange exchange = HttpExchangeHolder.get();
 		Headers responseHeaders = exchange.getResponseHeaders();
 		responseHeaders.putIfAbsent("server", Collections.singletonList(SERVER_NAME));

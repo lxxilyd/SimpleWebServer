@@ -30,9 +30,13 @@ public class Config {
     public static final String UPLOAD_PATH = "server.upload.path";
     public static final String WEB_PATH = "server.web.path";
     public static final String WEB_INDEX = "server.web.index";
+    public static final String WEB_TRY_FILE = "server.web.try.file";
     public static final String PROXY_URL = "server.proxy.url";
     public static final String PROXY_TARGET = "server.proxy.target";
     public static final String PROXY_REMOVE_URL = "server.proxy.remove.url";
+    public static final String AUTH_PATH = "server.auth.path";
+    public static final String AUTH_HEADER = "server.auth.header";
+    public static final String AUTH_TOKEN = "server.auth.token";
 
     private Config() {
         loadProperties();

@@ -3,6 +3,8 @@ package top.lixxing.web.server.response;
 public class HttpResponse {
 
 	public static final String MSG_OK = "OK";
+	public static final String MSG_BAD_REQUEST = "400 BadRequest";
+	public static final String MSG_UN_AUTHED = "401 Unauthorized";
 	public static final String MSG_NOT_FOUND = "404 Not Found";
 	public static final String MSG_METHOD_NOTE_ALLOW = "405 Method Not Allowed";
 	public static final String MSG_SERVER_ERROR = "500 Server Error";
@@ -10,6 +12,8 @@ public class HttpResponse {
 	public static final String CONTENT_TYPE_TEXT_PLAIN = "text/plain";
 
 	public static final HttpResponse OK = new HttpResponse(200, MSG_OK.getBytes(), CONTENT_TYPE_TEXT_PLAIN);
+	public static final HttpResponse BAD_REQUEST = new HttpResponse(400, MSG_BAD_REQUEST.getBytes(), CONTENT_TYPE_TEXT_PLAIN);
+	public static final HttpResponse UN_AUTHED = new HttpResponse(401, MSG_UN_AUTHED.getBytes(), CONTENT_TYPE_TEXT_PLAIN);
 	public static final HttpResponse NOT_FOUND = new HttpResponse(404, MSG_NOT_FOUND.getBytes(), CONTENT_TYPE_TEXT_PLAIN);
 	public static final HttpResponse METHOD_NOT_ALLOWED = new HttpResponse(405, MSG_METHOD_NOTE_ALLOW.getBytes(), CONTENT_TYPE_TEXT_PLAIN);
 	public static final HttpResponse SERVER_ERROR = new HttpResponse(500, MSG_SERVER_ERROR.getBytes(), CONTENT_TYPE_TEXT_PLAIN);
