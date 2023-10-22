@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.config.bean.Server;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -24,12 +25,13 @@ public class Startup {
 			logger.error(e.getMessage(), e);
 		}
 
-		InputStream inputStream = Startup.class.getClassLoader().getResourceAsStream("conf/config.json");
+		InputStream inputStream = new FileInputStream("conf/config.json");
 
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		Server server = objectMapper.readValue(inputStream, new TypeReference<Server>() {
-		});
+		Server server = objectMapper.readValue(inputStream, new TypeReference<Server>() {});
+
+		System.err.println(server.getWorkThreads());
 
 	}
 }

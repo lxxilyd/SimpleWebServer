@@ -3,7 +3,7 @@ package top.lixxing.web.server;
 import com.sun.net.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.lixxing.web.server.handler.BaseWebHandler;
+import top.lixxing.web.server.handler.WebHandler;
 import top.lixxing.web.server.config.Config;
 import top.lixxing.web.server.handler.DispatcherHandler;
 import top.lixxing.web.server.utils.ClassScanUtils;
@@ -35,26 +35,21 @@ public class SimpleWebServer {
         server.bind(new InetSocketAddress(Integer.parseInt(port)), 100);
         server.setExecutor(executor);
 
-//        List<BaseWebHandler> handlers = loadHandler();
-//
-//        for (BaseWebHandler handler : handlers) {
-//            server.createContext(handler.url(), handler);
-//        }
         server.createContext("/", new DispatcherHandler());
 
         server.start();
         logger.info("SimpleHttpServer start in port " + port + " ...");
     }
 
-    private List<BaseWebHandler> loadHandler() throws IOException, IllegalAccessException, InstantiationException {
-        List<Class<?>> classes =  ClassScanUtils.scanAllWithFilter("top", new AssignableScanFilter(BaseWebHandler.class));
+    private List<WebHandler> loadHandler() throws IOException, IllegalAccessException, InstantiationException {
+        List<Class<?>> classes =  ClassScanUtils.scanAllWithFilter("top", new AssignableScanFilter(WebHandler.class));
 
-        List<BaseWebHandler> handlers = new ArrayList<>();
+        List<WebHandler> handlers = new ArrayList<>();
         for (Class<?> aClass : classes) {
             if (aClass.isInterface()) {
                 continue;
             }
-            BaseWebHandler baseWebHandler = (BaseWebHandler) aClass.newInstance();
+            WebHandler baseWebHandler = (WebHandler) aClass.newInstance();
             handlers.add(baseWebHandler);
         }
         return handlers;

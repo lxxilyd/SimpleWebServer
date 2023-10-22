@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-public class ProxyHandler implements BaseWebHandler {
+public class ProxyHandler implements WebHandler {
 
     private final String proxyUrl = properties.getProperty(Config.PROXY_URL, "/proxy");
     private final String proxyTarget = properties.getProperty(Config.PROXY_TARGET, "http://localhost");

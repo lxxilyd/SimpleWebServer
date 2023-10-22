@@ -7,40 +7,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.lixxing.web.server.config.Config;
 import top.lixxing.web.server.response.HttpResponse;
+import top.lixxing.web.server.utils.AntPathMatcher;
 import top.lixxing.web.server.utils.ClassScanUtils;
 import top.lixxing.web.server.utils.GzipUtils;
+import top.lixxing.web.server.utils.PathMatcher;
 import top.lixxing.web.server.utils.filter.AssignableScanFilter;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
-public class DispatcherHandler implements HttpHandler {
+public final class DispatcherHandler implements HttpHandler {
 
-	private static final List<BaseWebHandler> handlers = new ArrayList<>();
+	private static final List<WebHandler> ALL_HANDLERS = new ArrayList<>();
+	private static final Map<String, WebHandler> HANDLER_CACHE = new HashMap<>();
 
-	String SERVER_NAME = "SimpleHttpServer/1.0";
-	String BOUNDARY = "boundary=";
+	private static final String SERVER_NAME = "SimpleHttpServer/1.0";
 
-	Config config = Config.getInstance();
-	Properties properties = config.getProperties();
-	boolean gzip = Boolean.valueOf(properties.getProperty(Config.SERVER_GZIP, "false"));
-	Logger logger = LoggerFactory.getLogger(BaseWebHandler.class);
+	private final Config config = Config.getInstance();
+	private final Properties properties = config.getProperties();
+	private final boolean gzip = Boolean.parseBoolean(properties.getProperty(Config.SERVER_GZIP, "false"));
+	private final Logger logger = LoggerFactory.getLogger(DispatcherHandler.class);
+
+	private final PathMatcher pathMatcher = new AntPathMatcher();
 
 	static {
 		try {
-			List<Class<?>> classes = ClassScanUtils.scanAllWithFilter("", new AssignableScanFilter(BaseWebHandler.class));
+			List<Class<?>> classes = ClassScanUtils.scanAllWithFilter("", new AssignableScanFilter(WebHandler.class));
 
 			for (Class<?> aClass : classes) {
 				if (aClass.isInterface()) {
 					continue;
 				}
-				BaseWebHandler baseWebHandler = (BaseWebHandler) aClass.newInstance();
-				handlers.add(baseWebHandler);
+				WebHandler baseWebHandler = (WebHandler) aClass.newInstance();
+				ALL_HANDLERS.add(baseWebHandler);
 			}
+			ALL_HANDLERS.sort(PathMatcher.getHandlerComparator("/"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -51,24 +53,23 @@ public class DispatcherHandler implements HttpHandler {
 	public void handle(HttpExchange httpExchange) throws IOException {
 		HttpExchangeHolder.put(httpExchange);
 		String requestUrl = httpExchange.getRequestURI().getPath();
-		for (BaseWebHandler handler : handlers) {
-			if (handler.url().equals(requestUrl)) {
-				doResponse(handler.doRequest(httpExchange));
-				return;
-			}
+		WebHandler webHandler = HANDLER_CACHE.get(requestUrl);
+		if (webHandler == null) {
+			webHandler = ALL_HANDLERS.stream().filter(h -> pathMatcher.match(h.url(), requestUrl)).findFirst().orElse(new IndexHandler());
+			HANDLER_CACHE.put(requestUrl, webHandler);
 		}
-		doResponse(HttpResponse.NOT_FOUND);
+		doResponse(webHandler.doRequest(httpExchange));
 	}
 
-	public void doResponse(HttpResponse response) {
+	public  void doResponse(HttpResponse response) {
 		doResponse(response.getStatus(), response.getData(), response.getContentType());
 	}
 
-	public void doResponse(int status, String message, String contentType) {
+	public  void doResponse(int status, String message, String contentType) {
 		doResponse(status, message.getBytes(), contentType);
 	}
 
-	public void doResponse(int status, byte[] data, String contentType) {
+	public  void doResponse(int status, byte[] data, String contentType) {
 		HttpExchange exchange = HttpExchangeHolder.get();
 		Headers responseHeaders = exchange.getResponseHeaders();
 		responseHeaders.putIfAbsent("server", Collections.singletonList(SERVER_NAME));
@@ -85,8 +86,7 @@ public class DispatcherHandler implements HttpHandler {
 			}
 			exchange.sendResponseHeaders(status, data.length);
 			outputStream.write(data);
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
+			outputStream.flush();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {

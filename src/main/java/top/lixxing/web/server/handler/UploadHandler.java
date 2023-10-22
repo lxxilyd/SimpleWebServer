@@ -16,7 +16,7 @@ import java.io.OutputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class UploadHandler implements BaseWebHandler {
+public class UploadHandler implements WebHandler {
 
     private final Logger logger = LoggerFactory.getLogger(UploadHandler.class);
 

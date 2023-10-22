@@ -10,14 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-public class IndexHandler implements BaseWebHandler {
+public class IndexHandler implements WebHandler {
 
 	private final String webPath = properties.getProperty(Config.WEB_PATH, "web");
 	private final String webIndex = properties.getProperty(Config.WEB_INDEX, "index.html");
 
 	@Override
 	public String url() {
-		return "/";
+		return "/**";
 	}
 
 	@Override
