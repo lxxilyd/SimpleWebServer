@@ -52,7 +52,7 @@ public class ClassScanUtils {
 				List<Class<?>> classList = scanFileClass(file.getPath(), basePath);
 				classes.addAll(classList);
 			}
-			logger.debug("scan file :" + file.getAbsolutePath());
+			logger.debug("scan file :{}", file.getAbsolutePath());
 			Class<?> aClass = nameToClass(file.getAbsolutePath().replace(basePath, ""));
 			if (aClass != null) {
 				classes.add(aClass);
@@ -64,7 +64,7 @@ public class ClassScanUtils {
 	private static List<Class<?>> scanJarClass(URL url) throws IOException {
 		List<Class<?>> classes = new ArrayList<>();
 
-		logger.debug("scanJarFile url: " + url);
+		logger.debug("scanJarFile url: {}", url);
 		JarFile jarFile = null;
 		URLConnection connection = url.openConnection();
 		if (connection instanceof JarURLConnection) {

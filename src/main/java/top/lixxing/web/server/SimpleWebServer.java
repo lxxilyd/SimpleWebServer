@@ -38,7 +38,7 @@ public class SimpleWebServer {
         server.createContext("/", new DispatcherHandler());
 
         server.start();
-        logger.info("SimpleHttpServer start in port " + port + " ...");
+        logger.info("SimpleHttpServer start in port {} ...", port);
     }
 
     private List<WebHandler> loadHandler() throws IOException, IllegalAccessException, InstantiationException {
